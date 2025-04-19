@@ -44,8 +44,6 @@ class ClMenu(StatesGroup):
 
 class StepByStepStates(StatesGroup):
     step1 = State()
-    step2 = State()
-    step3 = State()
     dev_step = State()
     cl_step = State()
 
