@@ -7,11 +7,7 @@ from bot.states import StepByStepStates, DeveloperState
 from main import dp
 
 
-def make_btn(btns, sizes):
-    rkb = ReplyKeyboardBuilder()
-    rkb.add(*[KeyboardButton(text=text) for text in btns])
-    rkb.adjust(*sizes)
-    return rkb.as_markup(resize_keyboard=True)
+
 
 
 @dp.message(StepByStepStates.step1, F.text == '👨‍💻 Developer')

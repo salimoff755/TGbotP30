@@ -1,11 +1,13 @@
-from aiogram import F
-from aiogram.fsm.context import FSMContext
-from aiogram.types import KeyboardButton, Message
+from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from bot.states import StepByStepStates, DeveloperState, DevMenu
-from main import dp
 
+def make_btn(btns, sizes):
+
+    rkb = ReplyKeyboardBuilder()
+    rkb.add(*[KeyboardButton(text=text) for text in btns])
+    rkb.adjust(*sizes)
+    return rkb.as_markup(resize_keyboard=True)
 
 
 
