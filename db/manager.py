@@ -1,19 +1,21 @@
-
-
 import psycopg2.extras
 
+from envirement.utils import Env
+
+
 class DB:
-    DB_NAME = "cl_dev_tgbot"
-    DB_USER = "postgres"
-    DB_PASSWORD = "1"
-    DB_PORT = "5432"
-    DB_HOST = "localhost"
+    DB_NAME = Env().db.DB_NAME
+    DB_USER = Env().db.DB_USER
+    DB_PASSWORD = Env().db.DB_PASSWORD
+    DB_PORT = Env().db.DB_PORT
+    DB_HOST = Env().db.DB_HOST
     connect = psycopg2.connect(dbname=DB_NAME ,
                                user=DB_USER ,
                                port=DB_PORT ,
                                host=DB_HOST ,
                                password=DB_PASSWORD)
     cursor = connect.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
 
 class Manager(DB):
     def save(self) -> object:
@@ -31,7 +33,7 @@ class Manager(DB):
         dict_data = self.get_dict_resultset(data)[0]
         return self.__class__(**dict_data)
 
-    def get_dict_resultset(self , data):
+    def __get_dict_resultset(self , data):
         dict_result = []
         for row in data:
             dict_result.append(dict(row))
@@ -48,7 +50,7 @@ class Manager(DB):
         self.cursor.execute(query , values)
         self.connect.commit()
         data = self.cursor.fetchall()
-        datas: list = self.get_dict_resultset(data)
+        datas: list = self.__get_dict_resultset(data)
         return_list = []
         if datas:
             for i in datas:
@@ -71,7 +73,7 @@ class Manager(DB):
         self.cursor.execute(query , list(set_values) + values)
         self.connect.commit()
         data = self.cursor.fetchall()
-        datas: list = self.get_dict_resultset(data)
+        datas: list = self.__get_dict_resultset(data)
         return_list = []
         if datas:
             for i in datas:
@@ -80,7 +82,7 @@ class Manager(DB):
         else:
             return []
 
-    def first(self , *args):
+    def first(self , *args) -> object:
         cols_format = "*" if not args else " , ".join(args)
         table_name = self.__class__.__name__.lower() + "s"
         cols = [col for col, val in self.__dict__.items() if not val == None]
@@ -91,7 +93,7 @@ class Manager(DB):
         """
         self.cursor.execute(query , values)
         data = self.cursor.fetchall()
-        dict_data = self.get_dict_resultset(data)
+        dict_data = self.__get_dict_resultset(data)
         if dict_data:
             dict_data = dict_data[0]
             return self.__class__(**dict_data)
@@ -107,7 +109,7 @@ class Manager(DB):
                 """
         self.cursor.execute(query, values)
         data = self.cursor.fetchall()
-        datas : list = self.get_dict_resultset(data)
+        datas : list = self.__get_dict_resultset(data)
         return_list = []
         if datas:
             for i in datas:
@@ -125,5 +127,5 @@ class Manager(DB):
                         """
         self.cursor.execute(query, values)
         data = self.cursor.fetchall()
-        datas: list = self.get_dict_resultset(data)
+        datas: list = self.__get_dict_resultset(data)
         return datas
