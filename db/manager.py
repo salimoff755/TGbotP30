@@ -1,7 +1,10 @@
 import psycopg2.extras
 
 from envirement.utils import Env
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 class DB:
     DB_NAME = Env().db.DB_NAME

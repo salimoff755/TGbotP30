@@ -2,12 +2,14 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+
 from bot.handler.developer import make_btn
+from bot.main import dp
 from bot.states import StepByStepStates, ClientState, ClMenu, CLOrder
-from main import dp
 
 
-@dp.message(StepByStepStates.step1, F.text == '🙋‍♂️ Client')
+
+@dp.message(StepByStepStates.step1, F.text == '🙋‍♂️ Customer')
 async def step_btns_handler(message: Message, state: FSMContext):
     btns = ['Name', 'Contact', '⬅️ Back']
     markup = make_btn(btns, [2, 1])

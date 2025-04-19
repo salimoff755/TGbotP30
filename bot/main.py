@@ -1,22 +1,11 @@
-import json
 
-from aiogram.fsm import state
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-
-
-
-import asyncio
-import logging
-import sys
 from os import getenv
 
-from aiogram import Bot, Dispatcher, html, F
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
+from aiogram import Dispatcher, html, F
+
 from aiogram.filters import CommandStart
-from aiogram.types import Message, KeyboardButton
+from aiogram.types import Message
 from dotenv import load_dotenv
 
 from bot.buttons.reply import make_btn
@@ -36,7 +25,7 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Client']
+    btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Customer']
     sizes = [1, 2]
     markup = make_btn(btns, sizes)
     await state.set_state(StepByStepStates.step1)
@@ -61,7 +50,7 @@ async def step_btns_handler(message: Message, state: FSMContext):
 
 @dp.message(F.text == '⬅️ Back')
 async def back_handler(message: Message, state: FSMContext):
-    btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Client']
+    btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Customer']
     sizes = [1, 2]
     markup = make_btn(btns, sizes)
     await state.set_state(StepByStepStates.step1)

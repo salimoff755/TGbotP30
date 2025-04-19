@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-
+from bot.handler import *
 from bot.main import dp
 from envirement.utils import Env
 

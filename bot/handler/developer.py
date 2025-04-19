@@ -1,9 +1,11 @@
 from aiogram import F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import KeyboardButton, Message
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.types import Message
 
-from bot.states import StepByStepStates, DeveloperState
+
+from bot.buttons.reply import make_btn
+from bot.states import StepByStepStates, DeveloperState, DevMenu
+from db.manager import Manager
 from main import dp
 
 
@@ -56,22 +58,18 @@ async def dev_occupation_handler(message: Message, state: FSMContext):
     await state.update_data(occupation=occupation)
     dev_data = await state.get_data()
 
+    developer = Manager()
+    developer.name = dev_data.get('name')
+    developer.contact = dev_data.get('contact')
+    developer.occupation = dev_data.get('occupation')
 
-    try:
-        with open("developer.json", "r") as f:
-            data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = []
+    dev_save = developer.save()  # Hech qanday try-except yo‘q
 
-    data.append({"name": dev_data.get("name", ""),
-                 "contact": dev_data.get("contact", ""),
-                 "occupation": dev_data.get("occupation", "")})
-
-    with open("developer.json", "w") as f:
-        json.dump(data, f, indent=4)
-
-    btns = ['📥 Ohirgi Buyurtma', '📦 Mening Buyurtmalarim', '🔖 Ozim haqimda', '⚙️ Settings', '☎️ Biz bilan boglanish',
-            '⬅️ Back']
-    markup = make_btn(btns, [1, 2, 2, 1])
-    await state.set_state(DevMenu.menu)
-    await message.answer("Malumotingiz saqlandi!", reply_markup=markup)
+    if dev_save:
+        btns = ['📥 Ohirgi Buyurtma', '📦 Mening Buyurtmalarim', '🔖 Ozim haqimda', '⚙️ Settings',
+                '☎️ Biz bilan boglanish', '⬅️ Back']
+        markup = make_btn(btns, [1, 2, 2, 1])
+        await state.set_state(DevMenu.menu)
+        await message.answer("Ma'lumotingiz muvaffaqiyatli saqlandi!", reply_markup=markup)
+    else:
+        await message.answer("Ma'lumot saqlanmadi. Iltimos, qaytadan urinib ko'ring.")
