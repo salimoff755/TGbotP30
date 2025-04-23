@@ -7,8 +7,6 @@ from bot.handler.developer import make_btn
 from bot.main import dp
 from bot.states import StepByStepStates, ClientState, ClMenu, CLOrder
 
-
-
 @dp.message(StepByStepStates.step1, F.text == '🙋‍♂️ Customer')
 async def step_btns_handler(message: Message, state: FSMContext):
     btns = ['Name', 'Contact', '⬅️ Back']

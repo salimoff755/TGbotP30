@@ -5,7 +5,7 @@ from aiogram.types import Message
 
 from bot.buttons.reply import make_btn
 from bot.states import StepByStepStates, DeveloperState, DevMenu
-from db.manager import Manager
+from db.model import Manager
 from main import dp
 
 
