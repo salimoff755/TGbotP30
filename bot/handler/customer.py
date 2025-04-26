@@ -1,11 +1,12 @@
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-
+import json
 
 from bot.handler.developer import make_btn
 from bot.main import dp
 from bot.states import StepByStepStates, ClientState, ClMenu, CLOrder
+
 
 @dp.message(StepByStepStates.step1, F.text == '🙋‍♂️ Customer')
 async def step_btns_handler(message: Message, state: FSMContext):
@@ -39,7 +40,7 @@ async def cl_contact_handler(message: Message, state: FSMContext):
     await state.update_data(contact=message.text)
     cl_data = await state.get_data()
     try:
-        with open("customer.json", "r") as f:
+        with open("/home/hp/PycharmProjects/TgbotP30/customer.json", "r") as f:
             data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         data = []
@@ -48,7 +49,7 @@ async def cl_contact_handler(message: Message, state: FSMContext):
                  "contact": cl_data.get("contact", "nomalum"),
                  })
 
-    with open("customer.json", "w") as f:
+    with open("/home/hp/PycharmProjects/TgbotP30/customer.json", "w") as f:
         json.dump(data, f, indent=2)
 
     btns = ['📤 Buyurtma berish', '📦 Mening Buyurtmalarim', '🔖 Ozim haqimda', '⚙️ Settings', '☎️ Biz bilan boglanish',
@@ -62,6 +63,7 @@ async def cl_contact_handler(message: Message, state: FSMContext):
 async def clorder_name_handler(message:Message, state:FSMContext):
     await state.set_state(CLOrder.name)
     await message.answer("Proyekt nomini kiriting!")
+
 
 @dp.message(CLOrder.name, F.text)
 async def clorder_name_handler(message: Message, state: FSMContext):
@@ -109,14 +111,14 @@ async def clorder_tzfile_hanler(message: Message, state: FSMContext):
     clorder_data = await state.get_data()
     clorder_data['file_id'] = file_id
     try:
-        with open("cl_order.json", "r") as f:
+        with open("/home/hp/PycharmProjects/TgbotP30/project.json", "r") as f:
             data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         data = []
 
     data.append(clorder_data)
 
-    with open("cl_order.json", "w") as f:
+    with open("/home/hp/PycharmProjects/TgbotP30/project.json", "w") as f:
         json.dump(data, f, indent=4)
 
     await state.clear()
