@@ -14,6 +14,7 @@ class DB:
     DB_PASSWORD = getenv("DB_PASSWORD")
     DB_HOST = getenv("DB_HOST")
     DB_PORT = getenv("DB_PORT")
+    DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 class Web:
     TOKEN = getenv("WEB_TOKEN")

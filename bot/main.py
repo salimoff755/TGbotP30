@@ -2,7 +2,7 @@
 from aiogram.fsm.context import FSMContext
 from os import getenv
 
-from aiogram import Dispatcher, html, F
+from aiogram import Dispatcher, F, Router
 
 from aiogram.filters import CommandStart
 from aiogram.types import Message
@@ -10,45 +10,51 @@ from dotenv import load_dotenv
 
 from bot.buttons.reply import make_btn
 from bot.states import StepByStepStates
+from aiogram.utils.i18n import gettext as _
+
 
 load_dotenv()
 TOKEN = getenv('TOKEN')
 
 dp = Dispatcher()
 
+main_router = Router()
 
 
 
 
 
 
-
-@dp.message(CommandStart())
+@main_router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Customer']
-    sizes = [1, 2]
+    btns = ['🔴 Language', '👨‍💻 Developer', '🙋‍♂️ Customer', '📝 Info']
+    sizes = [1, 2, 1]
     markup = make_btn(btns, sizes)
     await state.set_state(StepByStepStates.step1)
     await message.answer(
-        f"Assalomu alaykum, {html.bold(message.from_user.full_name)}! Iltimos tugmalardan birini tanlang!",
+        _("Hello, {}! Please, choose the buttons!".format(message.from_user.full_name)),
         reply_markup=markup)
 
 
-@dp.message(StepByStepStates.step1, F.text == '📝 Info')
+@main_router.message(F.text == '🔴 Language')
+async def command_start_handler(message: Message, state: FSMContext) -> None:
+    btns = ['🇺🇿 Uzbek', '🇷🇺 Russian', '🇬🇧 English']
+    sizes = [1, 2]
+    markup = make_btn(btns, sizes)
+    await state.set_state(StepByStepStates.step1)
+    await message.answer(_('Please, choose the languages'),
+        reply_markup=markup)
+
+
+@main_router.message(StepByStepStates.step1, F.text == '📝 Info')
 async def step_btns_handler(message: Message, state: FSMContext):
-    await message.answer('''Bu bot - buyurtmachi va dasturchilarni bir biri bilan boglovchi botdir. 
-    Agar siz buyurtmachi bolsangiz sizga qanday dastur yaratish kerak bolsa uni tanlab kerakli dasturchiga yonaltirib beradi.
-    Agar siz dasturchi bolsangiz siz qilgan ishlaringizni joylab boring va buyurtmachini toping! 
-    ''')
+    await message.answer(_('''This bot is a bot that connects customers and developers. 
+If you are a customer, it will select the application you need to create and direct you to the right developer. 
+If you are a developer, post your work and find a customer.! 
+    '''))
 
 
-
-
-
-
-
-
-@dp.message(F.text == '⬅️ Back')
+@main_router.message(F.text == '⬅️ Back')
 async def back_handler(message: Message, state: FSMContext):
     btns = ['📝 Info', '👨‍💻 Developer', '🙋‍♂️ Customer']
     sizes = [1, 2]
