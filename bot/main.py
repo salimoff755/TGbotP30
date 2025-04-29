@@ -12,6 +12,8 @@ from bot.buttons.reply import make_btn
 from bot.states import StepByStepStates
 from aiogram.utils.i18n import gettext as _
 
+from bot.utils_functions import check_user
+from db.models import User
 
 load_dotenv()
 TOKEN = getenv('TOKEN')
@@ -27,13 +29,8 @@ main_router = Router()
 
 @main_router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    btns = ['🔴 Language', '👨‍💻 Developer', '🙋‍♂️ Customer', '📝 Info']
-    sizes = [1, 2, 1]
-    markup = make_btn(btns, sizes)
-    await state.set_state(StepByStepStates.step1)
-    await message.answer(
-        _("Hello, {}! Please, choose the buttons!".format(message.from_user.full_name)),
-        reply_markup=markup)
+    await check_user(message)
+    await message.answer(_("Hello, {}! Please, choose the buttons!".format(message.from_user.full_name)))
 
 
 @main_router.message(F.text == '🔴 Language')
@@ -74,3 +71,4 @@ git remote add origin https://github.com/salimoff755/TGbotP30.git
 git push -u origin main
 """
 
+# btns = ['🔴 Language', '👨‍💻 Developer', '🙋‍♂️ Customer', '📝 Info']

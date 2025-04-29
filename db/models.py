@@ -1,19 +1,29 @@
-from select import select
-
-from sqlalchemy import create_engine, ForeignKey, DECIMAL, insert, select, delete, update, text
+# from select import select
+from sqlalchemy import ForeignKey, DECIMAL, insert, select, delete, update, text, TIMESTAMP, func
 from sqlalchemy import BIGINT
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column, sessionmaker
+from sqlalchemy.orm import Mapped, mapped_column
 from enum import Enum as PyEnum
 from sqlalchemy import Enum as SQLAEnum
 
-engine = create_engine("postgresql+psycopg2://postgres:1@localhost:5432/tg_bot_p30")
-session = sessionmaker(engine)()
-Base = declarative_base()
+from db import Base
+from db.utils import CreatedModel
+
+# engine = create_engine("postgresql+psycopg2://postgres:1@localhost:5432/tg_bot_p30")
+# session = sessionmaker(engine)()
+# Base = declarative_base()
+
+class User(CreatedModel):
+    __tablename__ = "users"
+    id : Mapped[int] = mapped_column(BIGINT, primary_key=True)
+    first_name : Mapped[str]
+    last_name : Mapped[str] = mapped_column(nullable=True)
+    username : Mapped[str] = mapped_column(nullable=True)
 
 
-class Developer(Base):
+
+class Developer(CreatedModel):
     __tablename__ = "developers"
-    chat_id : Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
+    chat_id : Mapped[int] = mapped_column(BIGINT, primary_key=True)
     first_name : Mapped[str]
     last_name : Mapped[str]
     phone_number : Mapped[str]
@@ -21,15 +31,19 @@ class Developer(Base):
     occupation : Mapped[str]
     description : Mapped[str]
 
-class Customer(Base):
+
+
+class Customer(CreatedModel):
     __tablename__ = "customers"
-    chat_id : Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
+    chat_id : Mapped[int] = mapped_column(BIGINT, primary_key=True)
     first_name: Mapped[str]
     last_name: Mapped[str]
     phone_number: Mapped[str]
     username: Mapped[str]
 
-class Project(Base):
+
+
+class Project(CreatedModel):
     class StatusType(PyEnum):
         REJECT = "reject"
         ACCEPT = "accept"
@@ -46,7 +60,9 @@ class Project(Base):
 
 
 
-Base.metadata.create_all(bind=engine)
+metadata = Base.metadata
+# Base.metadata.create_all(bind=engine)
+
 
 # query_insert = insert(Customer).values(first_name="Elyor",
 #                                        last_name="Salimov",

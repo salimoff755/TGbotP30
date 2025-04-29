@@ -13,6 +13,8 @@ from bot import handler
 
 TOKEN = Env().bot.TOKEN
 
+async def all_middleware():
+    pass
 
 async def main() -> None:
     i18n = I18n(path='locales', domain='en')
